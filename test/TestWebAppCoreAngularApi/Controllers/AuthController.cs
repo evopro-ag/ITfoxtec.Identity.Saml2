@@ -30,6 +30,7 @@ namespace TestWebAppCoreAngularApi.Controllers
         {
             var binding = new Saml2RedirectBinding();
             binding.SetRelayStateQuery(new Dictionary<string, string> { { relayStateReturnUrl, returnUrl ?? Url.Content("~/") } });
+            var defaultSite = new Uri($"{Request.Scheme}://{Request.Host.ToUriComponent()}/");
 
             return binding.Bind(new Saml2AuthnRequest(config)
             {
@@ -41,6 +42,7 @@ namespace TestWebAppCoreAngularApi.Controllers
                 //    Comparison = AuthnContextComparisonTypes.Exact,
                 //    AuthnContextClassRef = new string[] { AuthnContextClassTypes.PasswordProtectedTransport.OriginalString },
                 //},
+                AssertionConsumerServiceUrl = new Uri(defaultSite, "Auth/AssertionConsumerService")
             }).ToActionResult();
         }
 
