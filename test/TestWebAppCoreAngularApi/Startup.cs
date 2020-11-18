@@ -13,6 +13,7 @@ using ITfoxtec.Identity.Saml2.MvcCore;
 using ITfoxtec.Identity.Saml2.Schemas.Metadata;
 using Microsoft.AspNetCore.Authentication;
 using ITfoxtec.Identity.Saml2.Schemas;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace TestWebAppCoreAngularApi
 {
@@ -50,8 +51,8 @@ namespace TestWebAppCoreAngularApi
                 if (entityDescriptor.IdPSsoDescriptor != null)
                 {
                     saml2Configuration.AllowedIssuer = entityDescriptor.EntityId;
-                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First().Location;
-                    saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
+                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.FirstOrDefault()?.Location;
+                    saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.FirstOrDefault()?.Location;
                     saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
                 }
                 else
