@@ -38,9 +38,15 @@ namespace TestWebAppCoreAngularApi
 
                 //saml2Configuration.SignatureValidationCertificates.Add(CertificateUtil.Load(AppEnvironment.MapToPhysicalFilePath(Configuration["Saml2:SignatureValidationCertificateFile"])));
                 saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-
                 var entityDescriptor = new EntityDescriptor();
-                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
+
+                if (!string.IsNullOrWhiteSpace(Configuration["Saml2:IdPMetadataUrl"]))
+                    entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadataUrl"]));
+                else if (!string.IsNullOrWhiteSpace(Configuration["Saml2:IdPMetadataPath"]))
+                    entityDescriptor.ReadIdPSsoDescriptorFromFile(Configuration["Saml2:IdPMetadataPath"]);
+                else
+                    throw new Exception("Either \"Saml2:IdPMetadataUrl\" or \"Saml2:IdPMetadataPath\" has to be set.");
+
                 if (entityDescriptor.IdPSsoDescriptor != null)
                 {
                     saml2Configuration.AllowedIssuer = entityDescriptor.EntityId;
